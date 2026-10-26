@@ -7,117 +7,192 @@
 <title>T Edit Studio</title>
 <style>
 *{box-sizing:border-box}
-body{margin:0;background:#100b1c;color:white;font-family:Arial,sans-serif}
+body{margin:0;background:#100b1c;color:#fff;font-family:Arial,sans-serif}
 header{padding:18px;background:#211331;font-size:25px;font-weight:bold}
 header span{color:#ff9138}
 main{padding:18px;max-width:700px;margin:auto}
 h2{font-size:24px}
-button{border:0;border-radius:14px;padding:16px;background:#ff9138;color:#211331;font-size:17px;font-weight:bold;width:100%;margin:8px 0}
-.preview{background:#050408;border:1px solid #49345c;border-radius:22px;padding:12px;min-height:240px;display:flex;align-items:center;justify-content:center;position:relative}
+button{border:0;border-radius:14px;padding:15px;background:#ff9138;color:#211331;font-size:17px;font-weight:bold;width:100%;margin:8px 0;cursor:pointer}
+.preview{background:#050408;border:1px solid #49345c;border-radius:22px;padding:12px;min-height:230px;display:flex;align-items:center;justify-content:center;position:relative;overflow:hidden}
 video{width:100%;max-height:55vh;display:block}
 .watermark{position:absolute;bottom:22px;right:20px;background:#211331dd;color:#ff9138;padding:8px;border-radius:8px;font-weight:bold;pointer-events:none}
 .tools{display:grid;grid-template-columns:1fr 1fr;gap:8px}
-.tools button{background:#332344;color:white}
+.tools button{background:#332344;color:#fff}
 input{width:100%;padding:12px;margin:8px 0;font-size:16px}
 .note{color:#c5b5d5;line-height:1.5}
 #editor{display:none}
+#status{overflow-wrap:anywhere}
 </style>
 </head>
 <body>
 <header>▶ T Edit <span>Studio</span></header>
 <main>
 <section id="home">
-  <h2>Your Story. Your Style.</h2>
-  <p class="note">Choose a video and start creating.</p>
-  <button onclick="openPicker()">＋ Start Editing</button>
-  <button onclick="openPicker()">🎬 Video</button>
-  <input id="file" type="file" accept="video/*" hidden>
+<h2>Your Story. Your Style.</h2>
+<p class="note">Choose a video and start creating.</p>
+<button onclick="openPicker()">＋ Start Editing</button>
+<button onclick="openPicker()">🎬 Video</button>
+<input id="file" type="file" accept="video/*" hidden>
 </section>
 
 <section id="editor">
-  <h2>Your Video</h2>
-  <div class="preview">
-    <video id="video" controls playsinline></video>
-    <div class="watermark" id="logo">T Edit Studio</div>
-  </div>
+<h2>Your Video</h2>
+<div class="preview">
+<video id="video" controls playsinline></video>
+<div class="watermark" id="logo">T Edit Studio</div>
+</div>
 
-  <button onclick="openPicker()">＋ Change Video</button>
+<button onclick="openPicker()">＋ Change Video</button>
 
-  <h2>Trim Preview</h2>
-  <label>Start time (seconds)</label>
-  <input id="start" type="number" min="0" value="0">
-  <label>End time (seconds)</label>
-  <input id="end" type="number" min="1" value="10">
-  <button onclick="previewTrim()">Preview Selected Range</button>
+<h2>Trim Preview</h2>
+<label for="start">Start time (seconds)</label>
+<input id="start" type="number" min="0" value="0">
+<label for="end">End time (seconds)</label>
+<input id="end" type="number" min="1" value="10">
 
-  <div class="tools">
-    <button onclick="video.play()">▶ Play</button>
-    <button onclick="video.pause()">⏸ Pause</button>
-    <button onclick="restartVideo()">↻ Restart</button>
-    <button onclick="toggleMute()">🔊 Mute / Unmute</button>
-    <button onclick="toggleLogo()">Show / Hide Logo</button>
-  </div>
-  <p class="note" id="status">Video ready to preview.</p>
-  <button onclick="video.pause();alert('Export feature abhi banana baaki hai. Video abhi save nahi hota.')">Save / Export</button>
+<button onclick="previewTrim()">Preview Selected Range</button>
+
+<div class="tools">
+<button onclick="playVideo()">▶ Play</button>
+<button onclick="pauseVideo()">⏸ Pause</button>
+<button onclick="restartVideo()">↻ Restart</button>
+<button onclick="toggleMute()">🔊 Mute / Unmute</button>
+<button onclick="toggleLogo()">Show / Hide Logo</button>
+</div>
+
+<p class="note" id="status">Select a video to begin.</p>
+<button id="exportButton" onclick="exportVideo()">Save / Export</button>
+<p class="note">Export is experimental. Keep this page open while it processes.</p>
 </section>
 </main>
 
 <script>
-const fileInput=document.getElementById('file');
-const video=document.getElementById('video');
-const home=document.getElementById('home');
-const editor=document.getElementById('editor');
-const statusText=document.getElementById('status');
-let videoUrl='';
+const fileInput = document.getElementById('file');
+const video = document.getElementById('video');
+const home = document.getElementById('home');
+const editor = document.getElementById('editor');
+const statusText = document.getElementById('status');
+const exportButton = document.getElementById('exportButton');
+let videoUrl = '';
+let trimEndHandler = null;
 
-function openPicker(){fileInput.click();}
+function openPicker(){
+  fileInput.click();
+}
 
-fileInput.addEventListener('change',function(){
-  const file=this.files && this.files[0];
-  if(!file)return;
+fileInput.addEventListener('change', function(){
+  const file = this.files && this.files[0];
+  if(!file) return;
+
   if(!file.type.startsWith('video/')){
     alert('Please select a video file.');
     return;
   }
-  if(videoUrl)URL.revokeObjectURL(videoUrl);
-  videoUrl=URL.createObjectURL(file);
-  video.src=videoUrl;
-  home.style.display='none';
-  editor.style.display='block';
+
+  if(videoUrl) URL.revokeObjectURL(videoUrl);
+  video.pause();
+  videoUrl = URL.createObjectURL(file);
+  video.src = videoUrl;
+  home.style.display = 'none';
+  editor.style.display = 'block';
+  statusText.textContent = 'Loading video...';
   video.load();
-  video.onloadedmetadata=function(){
-    document.getElementById('start').max=Math.floor(video.duration);
-    document.getElementById('end').max=Math.floor(video.duration);
-    document.getElementById('end').value=Math.floor(video.duration);
-    statusText.textContent='Video loaded: '+file.name;
+
+  video.onloadedmetadata = function(){
+    document.getElementById('start').value = 0;
+    document.getElementById('start').max = Math.floor(video.duration);
+    document.getElementById('end').value = Math.floor(video.duration);
+    document.getElementById('end').max = Math.floor(video.duration);
+    statusText.textContent = 'Video loaded: ' + file.name;
+  };
+
+  video.onerror = function(){
+    statusText.textContent = 'This video format could not be previewed.';
   };
 });
 
-function previewTrim(){
-  const s=Number(document.getElementById('start').value);
-  const e=Number(document.getElementById('end').value);
-  if(!video.src){alert('Pehle video select karo.');return;}
-  if(s<0||e<=s||e>video.duration){
-    alert('Start aur end time sahi bharo.');
-    return;
+function getRange(){
+  const s = Number(document.getElementById('start').value);
+  const e = Number(document.getElementById('end').value);
+
+  if(!video.src || !Number.isFinite(video.duration)){
+    alert('Pehle video select karo aur loading poori hone do.');
+    return null;
   }
-  video.currentTime=s;
-  video.play();
-  video.ontimeupdate=function(){
-    if(video.currentTime>=e){
-      video.pause();
-      video.ontimeupdate=null;
-    }
-  };
-  statusText.textContent='Selected range ka preview chal raha hai.';
+
+  if(s < 0 || e <= s || e > video.duration){
+    alert('Start aur end time sahi bharo.');
+    return null;
+  }
+
+  return {s, e};
 }
 
-function restartVideo(){video.currentTime=0;video.play();}
-function toggleMute(){video.muted=!video.muted;}
-function toggleLogo(){
-  const logo=document.getElementById('logo');
-  logo.style.display=logo.style.display==='none'?'block':'none';
+function previewTrim(){
+  const range = getRange();
+  if(!range) return;
+
+  video.ontimeupdate = null;
+  video.currentTime = range.s;
+
+  if(trimEndHandler) video.removeEventListener('timeupdate', trimEndHandler);
+
+  trimEndHandler = function(){
+    if(video.currentTime >= range.e){
+      video.pause();
+      video.removeEventListener('timeupdate', trimEndHandler);
+      trimEndHandler = null;
+    }
+  };
+
+  video.addEventListener('timeupdate', trimEndHandler);
+  video.play().catch(function(){
+    statusText.textContent = 'Preview chalane ke liye Play dabao.';
+  });
+
+  statusText.textContent = 'Preview: ' + range.s + 's to ' + range.e + 's';
 }
+
+function playVideo(){
+  video.play().catch(function(){
+    alert('Pehle video select karo.');
+  });
+}
+
+function pauseVideo(){
+  video.pause();
+}
+
+function restartVideo(){
+  if(!video.src) return;
+  video.currentTime = 0;
+  playVideo();
+}
+
+function toggleMute(){
+  video.muted = !video.muted;
+}
+
+function toggleLogo(){
+  const logo = document.getElementById('logo');
+  logo.style.display = logo.style.display === 'none' ? 'block' : 'none';
+}
+
+async function exportVideo(){
+  const range = getRange();
+  if(!range) return;
+
+  if(!window.MediaRecorder || !HTMLCanvasElement.prototype.captureStream){
+    alert('Is browser mein experimental export supported nahi hai.');
+    return;
+  }
+
+  alert('Is version mein asli video trim aur export abhi implement nahi hai. Galat ya khaali video download karne ke bajay hum agle version mein proper export engine jodenge.');
+}
+
+window.addEventListener('beforeunload', function(){
+  if(videoUrl) URL.revokeObjectURL(videoUrl);
+});
 </script>
 </body>
 </html>
