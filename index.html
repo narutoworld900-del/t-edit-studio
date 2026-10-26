@@ -3,196 +3,205 @@
 <html lang="en">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="theme-color" content="#10091d">
 <title>T Edit Studio</title>
 <style>
 *{box-sizing:border-box}
-body{margin:0;background:#100b1c;color:#fff;font-family:Arial,sans-serif}
-header{padding:18px;background:#211331;font-size:25px;font-weight:bold}
-header span{color:#ff9138}
-main{padding:18px;max-width:700px;margin:auto}
-h2{font-size:24px}
-button{border:0;border-radius:14px;padding:15px;background:#ff9138;color:#211331;font-size:17px;font-weight:bold;width:100%;margin:8px 0;cursor:pointer}
-.preview{background:#050408;border:1px solid #49345c;border-radius:22px;padding:12px;min-height:230px;display:flex;align-items:center;justify-content:center;position:relative;overflow:hidden}
-video{width:100%;max-height:55vh;display:block}
-.watermark{position:absolute;bottom:22px;right:20px;background:#211331dd;color:#ff9138;padding:8px;border-radius:8px;font-weight:bold;pointer-events:none}
-.tools{display:grid;grid-template-columns:1fr 1fr;gap:8px}
-.tools button{background:#332344;color:#fff}
-input{width:100%;padding:12px;margin:8px 0;font-size:16px}
-.note{color:#c5b5d5;line-height:1.5}
-#editor{display:none}
-#status{overflow-wrap:anywhere}
+body{margin:0;background:#10091d;color:#fff;font-family:Arial,sans-serif;padding-bottom:90px}
+header{display:flex;align-items:center;gap:10px;padding:18px 12px}
+.logo{background:linear-gradient(135deg,#ff9b22,#ff402f,#a51cff);padding:14px;border-radius:16px;font-size:25px}
+.brand{flex:1}
+.brand h1{font-size:25px;margin:0}
+.brand h1 span{color:#ff922e}
+.brand small{color:#c5b5d8;letter-spacing:2px}
+button{color:white;cursor:pointer;font-size:15px}
+.pro,.settings{background:#271832;border:1px solid #68416b;border-radius:12px;padding:10px}
+.hero{margin:8px 12px 25px;padding:25px 18px;border-radius:25px;background:linear-gradient(125deg,#321346,#171022 65%,#663044);border:1px solid #68416b}
+.hero h2{font-size:35px;line-height:1.1;margin:0 0 12px}
+.hero h2 span{color:#ff962b}
+.hero p{color:#d6c7e8}
+.slogan{display:inline-block;background:#ff7b2c;color:#1a0c20;padding:10px 14px;border-radius:7px;font-weight:bold}
+.section{margin:20px 12px 13px;display:flex;align-items:center;justify-content:space-between}
+.section h2{font-size:20px;margin:0}
+.muted{color:#bcaacd;font-size:12px}
+.tiles{display:grid;grid-template-columns:repeat(3,1fr);gap:9px;margin:0 12px}
+.tile{border:0;border-radius:21px;padding:20px 4px;min-height:140px;font-weight:bold}
+.tile b{display:block;font-size:35px;margin-bottom:12px}
+.tile small{display:block;margin-top:7px;font-weight:normal}
+.video{background:linear-gradient(145deg,#ff9d1e,#f33e2e)}
+.photo{background:linear-gradient(145deg,#bd21ff,#7015cf)}
+.collage{background:linear-gradient(145deg,#00b9cb,#07536e)}
+.projects{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:9px;margin:0 12px}
+.project{border:1px solid #382747;border-radius:15px;overflow:hidden;background:#1b1228;min-width:0}
+.thumb{height:90px;display:grid;place-items:center;font-size:35px;background:linear-gradient(135deg,#493052,#f08b3a)}
+.project strong{display:block;padding:8px;font-size:12px;overflow-wrap:anywhere}
+.bottom{position:fixed;bottom:8px;left:2%;width:96%;display:grid;grid-template-columns:repeat(4,1fr);background:#1a1127;border:1px solid #493459;border-radius:24px;padding:8px;z-index:10}
+.nav{border:0;background:none;padding:8px 2px;color:#cdbde0;border-radius:12px;font-size:12px}
+.nav span{display:block;font-size:23px;margin-bottom:4px}
+.nav.active{color:#ff922e;background:#35213c}
+.screen{display:none}
+.screen.active{display:block}
+.row{display:flex;gap:8px;flex-wrap:wrap}
+.action{background:#281a38;border:1px solid #50365f;border-radius:12px;padding:11px}
+.primary{background:linear-gradient(90deg,#ff9b24,#ff5d2e);color:#1c1020;border:0;border-radius:12px;padding:12px;font-weight:bold}
+.panel{margin:12px;padding:14px;background:#1c1329;border:1px solid #3d2b4f;border-radius:18px}
+.preview{margin:12px;background:#07050b;border-radius:17px;min-height:200px;display:grid;place-items:center;position:relative;overflow:hidden}
+.preview video,.preview img{width:100%;max-height:42vh;object-fit:contain}
+.watermark{position:absolute;right:12px;bottom:12px;color:#fff9;font-weight:bold}
+.tools{display:grid;grid-template-columns:repeat(4,1fr);gap:8px;margin:12px}
+.tool{background:#251831;border:1px solid #483254;border-radius:13px;padding:12px 2px;font-size:12px}
+.tool span{display:block;font-size:23px;margin-bottom:5px}
+input,select{width:100%;padding:11px;border-radius:10px;background:#10091d;color:white;border:1px solid #493459;margin:5px 0}
+label{font-size:12px;color:#cbbadd}
+h2,h3{overflow-wrap:anywhere}
+@media(min-width:650px){body{max-width:850px;margin:auto}.hero{padding:35px}.thumb{height:130px}}
 </style>
 </head>
 <body>
-<header>▶ T Edit <span>Studio</span></header>
-<main>
-<section id="home">
-<h2>Your Story. Your Style.</h2>
-<p class="note">Choose a video and start creating.</p>
-<button onclick="openPicker()">＋ Start Editing</button>
-<button onclick="openPicker()">🎬 Video</button>
-<input id="file" type="file" accept="video/*" hidden>
+<header>
+<div class="logo">🎬</div>
+<div class="brand"><h1>T Edit <span>Studio</span></h1><small>EDIT • CREATE • SHARE</small></div>
+<button class="pro" onclick="show('premium')">👑 PRO</button>
+<button class="settings" onclick="show('settings')">⚙</button>
+</header>
+
+<section id="home" class="screen active">
+<div class="hero">
+<h2>Powerful<br><span>Video Editing</span><br>Made Simple</h2>
+<p>Turn your moments into something amazing.</p>
+<div class="slogan">Edit Your Story ✦</div>
+<p>⚡ Fast &nbsp; ✦ Creative Tools &nbsp; ▣ HD Quality</p>
+</div>
+<div class="section"><h2>CREATE NEW</h2><span class="muted">Make Something Amazing</span></div>
+<div class="tiles">
+<button class="tile video" onclick="pick('video')"><b>🎬</b>Video<small>Edit & Create</small></button>
+<button class="tile photo" onclick="pick('photo')"><b>🌄</b>Photo<small>Make Slideshow</small></button>
+<button class="tile collage" onclick="pick('collage')"><b>▦</b>Collage<small>Combine Media</small></button>
+</div>
+<div class="section"><h2>RECENT PROJECTS</h2><button class="action" onclick="show('projects')">See all ›</button></div>
+<div id="recent" class="projects">
+<div class="project"><div class="thumb">🏞️</div><strong>My Video</strong></div>
+<div class="project"><div class="thumb">🌿</div><strong>Nature Edit</strong></div>
+<div class="project"><div class="thumb">🔥</div><strong>Anime Edit</strong></div>
+</div>
 </section>
 
-<section id="editor">
-<h2>Your Video</h2>
-<div class="preview">
-<video id="video" controls playsinline></video>
-<div class="watermark" id="logo">T Edit Studio</div>
+<section id="editor" class="screen">
+<div class="section"><button class="action" onclick="show('home')">← Home</button><h2 id="editorTitle">Video Editor</h2><button class="primary" onclick="exportMedia()">Export</button></div>
+<p class="muted" style="margin:12px" id="fileInfo">Choose media to start.</p>
+<div class="preview" id="preview"><p class="muted">Your media preview appears here.</p></div>
+<div class="panel" id="videoControls">
+<div class="row">
+<button class="action" onclick="playPause()">▶ Play / Pause</button>
+<button class="action" onclick="restart()">↺ Restart</button>
+<button class="action" onclick="mute()">🔊 Mute</button>
 </div>
-
-<button onclick="openPicker()">＋ Change Video</button>
-
-<h2>Trim Preview</h2>
-<label for="start">Start time (seconds)</label>
-<input id="start" type="number" min="0" value="0">
-<label for="end">End time (seconds)</label>
-<input id="end" type="number" min="1" value="10">
-
-<button onclick="previewTrim()">Preview Selected Range</button>
-
+<label>Trim start (seconds)</label><input id="start" type="number" min="0" value="0">
+<label>Trim end (seconds)</label><input id="end" type="number" min="0" value="0">
+<button class="action" onclick="previewTrim()">▶ Preview Trim</button>
+<div class="row" style="margin-top:10px">
+<button class="action" onclick="toggleWatermark()">💧 Watermark</button>
+<button class="action" onclick="filter()">🎨 Filter</button>
+</div>
+</div>
+<div class="section"><h2>EDIT TOOLS</h2></div>
 <div class="tools">
-<button onclick="playVideo()">▶ Play</button>
-<button onclick="pauseVideo()">⏸ Pause</button>
-<button onclick="restartVideo()">↻ Restart</button>
-<button onclick="toggleMute()">🔊 Mute / Unmute</button>
-<button onclick="toggleLogo()">Show / Hide Logo</button>
+<button class="tool" onclick="previewTrim()"><span>✂️</span>Trim</button>
+<button class="tool" onclick="message('Music mixing will be added with the audio engine.')"><span>🎵</span>Music</button>
+<button class="tool" onclick="addText()"><span>🔤</span>Text</button>
+<button class="tool" onclick="filter()"><span>🎨</span>Filters</button>
+<button class="tool" onclick="message('Effects are not connected yet.')"><span>✨</span>Effects</button>
+<button class="tool" onclick="message('Speed control needs video rendering support.')"><span>⏩</span>Speed</button>
+<button class="tool" onclick="rotate()"><span>🔄</span>Rotate</button>
+<button class="tool" onclick="message('Crop tool is planned for the next version.')"><span>▣</span>Crop</button>
 </div>
-
-<p class="note" id="status">Select a video to begin.</p>
-<button id="exportButton" onclick="exportVideo()">Save / Export</button>
-<p class="note">Export is experimental. Keep this page open while it processes.</p>
 </section>
-</main>
 
+<section id="projects" class="screen">
+<div class="section"><button class="action" onclick="show('home')">← Back</button><h2>Projects</h2></div>
+<div class="panel" id="projectList">Your selected projects will appear here.</div>
+<button class="primary" style="margin:12px" onclick="pick('video')">＋ New Video Project</button>
+</section>
+
+<section id="premium" class="screen">
+<div class="section"><button class="action" onclick="show('home')">← Back</button><h2>T Edit Pro 👑</h2></div>
+<div class="panel" style="text-align:center"><div style="font-size:55px">👑</div><h2>Make Every Story Shine</h2><p class="muted">Premium concept preview</p><p>✨ Premium effects</p><p>💧 Watermark controls</p><p>📺 Ad-free editing</p><button class="primary" onclick="message('Premium payment is not connected yet.')">Explore Pro</button><p class="muted">Payments and real ads are not connected in this version.</p></div>
+</section>
+
+<section id="profile" class="screen">
+<div class="section"><button class="action" onclick="show('home')">← Back</button><h2>Profile</h2></div>
+<div class="panel" style="text-align:center"><div style="font-size:55px">👤</div><h2>Video Creator</h2><p class="muted">Guest Profile</p><button class="action" onclick="message('Sign in will be added later.')">Sign In (Coming Soon)</button></div>
+</section>
+
+<section id="settings" class="screen">
+<div class="section"><button class="action" onclick="show('home')">← Back</button><h2>Settings</h2></div>
+<div class="panel"><p>Theme <b style="float:right">Dark Neon</b></p><p>App <b style="float:right">T Edit Studio</b></p><p>Version <b style="float:right">Prototype 1.0</b></p><p class="muted">Your media is previewed locally in the browser.</p></div>
+</section>
+
+<input id="videoFile" type="file" accept="video/*" hidden>
+<input id="photoFile" type="file" accept="image/*" hidden>
+<input id="collageFiles" type="file" accept="image/*" multiple hidden>
+<nav class="bottom">
+<button class="nav active" data-id="home" onclick="show('home')"><span>⌂</span>Home</button>
+<button class="nav" data-id="projects" onclick="show('projects')"><span>▣</span>Projects</button>
+<button class="nav" data-id="premium" onclick="show('premium')"><span>♛</span>Premium</button>
+<button class="nav" data-id="profile" onclick="show('profile')"><span>♟</span>Profile</button>
+</nav>
 <script>
-const fileInput = document.getElementById('file');
-const video = document.getElementById('video');
-const home = document.getElementById('home');
-const editor = document.getElementById('editor');
-const statusText = document.getElementById('status');
-const exportButton = document.getElementById('exportButton');
-let videoUrl = '';
-let trimEndHandler = null;
-
-function openPicker(){
-  fileInput.click();
+let media=null,kind='video',url=null,watermarkOn=true,filtered=false,rotated=false;
+const $=id=>document.getElementById(id);
+function show(id){
+document.querySelectorAll('.screen').forEach(s=>s.classList.toggle('active',s.id===id));
+document.querySelectorAll('.nav').forEach(n=>n.classList.toggle('active',n.dataset.id===id));
+window.scrollTo(0,0);
 }
-
-fileInput.addEventListener('change', function(){
-  const file = this.files && this.files[0];
-  if(!file) return;
-
-  if(!file.type.startsWith('video/')){
-    alert('Please select a video file.');
-    return;
-  }
-
-  if(videoUrl) URL.revokeObjectURL(videoUrl);
-  video.pause();
-  videoUrl = URL.createObjectURL(file);
-  video.src = videoUrl;
-  home.style.display = 'none';
-  editor.style.display = 'block';
-  statusText.textContent = 'Loading video...';
-  video.load();
-
-  video.onloadedmetadata = function(){
-    document.getElementById('start').value = 0;
-    document.getElementById('start').max = Math.floor(video.duration);
-    document.getElementById('end').value = Math.floor(video.duration);
-    document.getElementById('end').max = Math.floor(video.duration);
-    statusText.textContent = 'Video loaded: ' + file.name;
-  };
-
-  video.onerror = function(){
-    statusText.textContent = 'This video format could not be previewed.';
-  };
-});
-
-function getRange(){
-  const s = Number(document.getElementById('start').value);
-  const e = Number(document.getElementById('end').value);
-
-  if(!video.src || !Number.isFinite(video.duration)){
-    alert('Pehle video select karo aur loading poori hone do.');
-    return null;
-  }
-
-  if(s < 0 || e <= s || e > video.duration){
-    alert('Start aur end time sahi bharo.');
-    return null;
-  }
-
-  return {s, e};
+function message(text){alert(text)}
+function pick(type){
+kind=type;
+if(type==='video')$('videoFile').click();
+else if(type==='photo')$('photoFile').click();
+else $('collageFiles').click();
 }
-
+$('videoFile').onchange=e=>{if(e.target.files[0])loadVideo(e.target.files[0]);e.target.value=''};
+$('photoFile').onchange=e=>{if(e.target.files[0])loadPhoto(e.target.files[0]);e.target.value=''};
+$('collageFiles').onchange=e=>{if(e.target.files.length)loadCollage(Array.from(e.target.files));e.target.value=''};
+function resetUrl(){if(url)URL.revokeObjectURL(url);url=null;media=null}
+function loadVideo(file){
+resetUrl();url=URL.createObjectURL(file);$('editorTitle').textContent='Video Editor';$('fileInfo').textContent=file.name+' • '+(file.size/1048576).toFixed(1)+' MB';
+$('preview').innerHTML='<video id="media" controls playsinline></video><div class="watermark" id="mark">T EDIT STUDIO</div>';
+media=$('media');media.src=url;media.onloadedmetadata=()=>{$('end').value=media.duration.toFixed(1)};$('videoControls').style.display='block';show('editor');saveProject(file,'video');
+}
+function loadPhoto(file){
+resetUrl();url=URL.createObjectURL(file);$('editorTitle').textContent='Photo Studio';$('fileInfo').textContent=file.name;$('preview').innerHTML='<img id="media" alt="Selected photo"><div class="watermark" id="mark">T EDIT STUDIO</div><div id="caption" style="position:absolute;bottom:35px;font-size:24px;font-weight:bold;text-shadow:0 2px 5px black"></div>';
+media=$('media');media.src=url;$('videoControls').style.display='none';show('editor');saveProject(file,'photo');
+}
+function loadCollage(files){
+resetUrl();$('editorTitle').textContent='Collage Studio';$('fileInfo').textContent=files.length+' photos selected';$('videoControls').style.display='none';
+$('preview').innerHTML='<div id="collageGrid" style="display:grid;grid-template-columns:repeat(2,1fr);gap:4px;padding:4px"></div>';
+files.forEach(f=>{const im=document.createElement('img');im.src=URL.createObjectURL(f);im.style.width='100%';im.style.height='130px';im.style.objectFit='cover';$('collageGrid').appendChild(im);saveProject(f,'collage')});show('editor');
+}
+function playPause(){if(!media||media.tagName!=='VIDEO')return message('Select a video first.');media.paused?media.play():media.pause()}
+function restart(){if(media&&media.tagName==='VIDEO'){media.currentTime=0;media.play()}}
+function mute(){if(media&&media.tagName==='VIDEO')media.muted=!media.muted}
 function previewTrim(){
-  const range = getRange();
-  if(!range) return;
-
-  video.ontimeupdate = null;
-  video.currentTime = range.s;
-
-  if(trimEndHandler) video.removeEventListener('timeupdate', trimEndHandler);
-
-  trimEndHandler = function(){
-    if(video.currentTime >= range.e){
-      video.pause();
-      video.removeEventListener('timeupdate', trimEndHandler);
-      trimEndHandler = null;
-    }
-  };
-
-  video.addEventListener('timeupdate', trimEndHandler);
-  video.play().catch(function(){
-    statusText.textContent = 'Preview chalane ke liye Play dabao.';
-  });
-
-  statusText.textContent = 'Preview: ' + range.s + 's to ' + range.e + 's';
+if(!media||media.tagName!=='VIDEO')return message('Select a video first.');
+let a=Math.max(0,Number($('start').value)||0),b=Number($('end').value)||media.duration;
+if(b<=a)return message('End time must be greater than start time.');
+media.currentTime=Math.min(a,media.duration);media.play();
+const stop=()=>{if(media&&media.currentTime>=Math.min(b,media.duration)){media.pause();media.removeEventListener('timeupdate',stop)}};
+media.addEventListener('timeupdate',stop);
 }
-
-function playVideo(){
-  video.play().catch(function(){
-    alert('Pehle video select karo.');
-  });
+function toggleWatermark(){watermarkOn=!watermarkOn;const el=$('mark');if(el)el.style.display=watermarkOn?'block':'none';message(watermarkOn?'Watermark shown in preview':'Watermark hidden in preview')}
+function filter(){filtered=!filtered;if(media)media.style.filter=filtered?'saturate(1.5) contrast(1.1)':'none'}
+function rotate(){if(!media||media.tagName!=='VIDEO')return message('Select a video first.');rotated=!rotated;media.style.transform=rotated?'rotate(90deg) scale(.7)':'none'}
+function addText(){const t=prompt('Enter text for preview');if(!t)return;let el=$('previewText');if(!el){el=document.createElement('div');el.id='previewText';el.style.cssText='position:absolute;top:45%;left:5%;right:5%;text-align:center;font-size:24px;font-weight:bold;text-shadow:0 2px 5px black';$('preview').appendChild(el)}el.textContent=t}
+function saveProject(file,type){
+const item=document.createElement('div');item.className='project';item.innerHTML='<div class="thumb">'+(type==='video'?'🎬':type==='photo'?'🌄':'▦')+'</div><strong></strong>';item.querySelector('strong').textContent=file.name;
+$('projectList').appendChild(item);$('recent').prepend(item.cloneNode(true));
 }
-
-function pauseVideo(){
-  video.pause();
-}
-
-function restartVideo(){
-  if(!video.src) return;
-  video.currentTime = 0;
-  playVideo();
-}
-
-function toggleMute(){
-  video.muted = !video.muted;
-}
-
-function toggleLogo(){
-  const logo = document.getElementById('logo');
-  logo.style.display = logo.style.display === 'none' ? 'block' : 'none';
-}
-
-async function exportVideo(){
-  const range = getRange();
-  if(!range) return;
-
-  if(!window.MediaRecorder || !HTMLCanvasElement.prototype.captureStream){
-    alert('Is browser mein experimental export supported nahi hai.');
-    return;
-  }
-
-  alert('Is version mein asli video trim aur export abhi implement nahi hai. Galat ya khaali video download karne ke bajay hum agle version mein proper export engine jodenge.');
-}
-
-window.addEventListener('beforeunload', function(){
-  if(videoUrl) URL.revokeObjectURL(videoUrl);
-});
+function exportMedia(){message('Export is not connected yet. This version can preview media but cannot render a finished video file.')}
 </script>
 </body>
-</html>
+  </html>
+  
