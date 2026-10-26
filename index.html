@@ -4,132 +4,151 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="theme-color" content="#100b1d">
 <title>T Edit Studio</title>
 <style>
 *{box-sizing:border-box}
-body{margin:0;background:#11101a;color:white;font-family:Arial,sans-serif}
-header{padding:20px;background:#201a32;color:#ff9148;font-size:27px;font-weight:bold}
-main{padding:18px;max-width:650px;margin:auto}
-h2{font-size:23px}
-.preview{position:relative;background:#08080c;border:1px solid #403650;border-radius:18px;overflow:hidden;min-height:220px;display:flex;align-items:center;justify-content:center}
-video{width:100%;max-height:420px;display:block}
-.watermark{position:absolute;right:12px;bottom:12px;background:#211a32dd;color:#ff9148;padding:8px 10px;border-radius:7px;font-size:13px;font-weight:bold;pointer-events:none}
-button,.tool{border:0;border-radius:12px;padding:15px;font-size:16px;cursor:pointer}
-.primary{background:#ff9148;color:#21132b;font-weight:bold;width:100%;margin:10px 0}
-.secondary{background:#302443;color:white;width:100%;margin:5px 0}
-input{width:100%;padding:13px;font-size:16px;margin:7px 0 12px}
-.note{color:#c9c1d4;font-size:14px;line-height:1.5}
-.status{color:#ffbd83;font-size:14px}
+:root{--bg:#100b1d;--card:#1b1430;--orange:#ff8a32;--purple:#a52cff;--cyan:#19d7dc;--muted:#bcb4d2}
+body{margin:0;background:var(--bg);color:#fff;font-family:Arial,sans-serif}
+button{font:inherit;cursor:pointer}
+header{padding:20px 17px 16px;display:flex;align-items:center;justify-content:space-between;gap:10px;background:linear-gradient(110deg,#17102a,#26123b)}
+.brand{display:flex;align-items:center;gap:10px;font-size:23px;font-weight:800;letter-spacing:-.7px}
+.logo{width:43px;height:43px;border-radius:13px;background:linear-gradient(145deg,var(--orange),var(--purple));display:grid;place-items:center;font-size:25px}
+.brand span{color:var(--orange)}
+.headbtn{border:1px solid #49345f;border-radius:12px;background:#241936;color:#fff;padding:10px}
+main{max-width:650px;margin:auto;padding:16px 15px 95px}
+.hero{min-height:175px;border:1px solid #5b3376;border-radius:22px;padding:22px 19px;position:relative;overflow:hidden;background:radial-gradient(ellipse at 90% 10%,#803d80 0,transparent 42%),linear-gradient(125deg,#21153b,#171024 65%,#422044)}
+.hero:after{content:"";position:absolute;width:160px;height:160px;border-radius:50%;right:-50px;bottom:-70px;background:linear-gradient(135deg,#ff9b31,#ff4f74);filter:blur(3px);opacity:.65}
+.tag{color:#ffc184;font-size:12px;font-weight:bold;letter-spacing:2px}
+.hero h1{font-size:29px;line-height:1.12;margin:12px 0 8px;max-width:300px}
+.hero h1 span{color:var(--orange)}
+.hero p{color:#d2c7e4;font-size:13px;line-height:1.5;max-width:260px}
+.hero button{position:relative;z-index:1;border:0;border-radius:12px;background:var(--orange);color:#27132a;font-weight:bold;padding:11px 15px}
+.sectionhead{display:flex;justify-content:space-between;align-items:center;margin:26px 2px 14px}
+.sectionhead h2{font-size:19px;margin:0}
+.sectionhead small{color:var(--muted)}
+.creategrid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:10px}
+.createcard{min-width:0;min-height:145px;border:1px solid #48315d;border-radius:18px;padding:15px 5px;background:linear-gradient(150deg,#ff842e,#a92c63);color:white;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:10px;box-shadow:0 6px 18px #0004}
+.createcard:nth-child(2){background:linear-gradient(150deg,#9a2aff,#4c218e)}
+.createcard:nth-child(3){background:linear-gradient(150deg,#11aab9,#164d83)}
+.articon{width:59px;height:59px;border:2px solid #ffffffb8;border-radius:18px;display:grid;place-items:center;font-size:30px;background:#ffffff14}
+.createcard strong{font-size:16px}
+.createcard small{font-size:11px;color:#f6eaff;text-align:center}
+.premium{margin-top:22px;padding:16px;border-radius:18px;border:1px solid #795025;background:linear-gradient(110deg,#34203c,#21162c);display:flex;align-items:center;gap:13px}
+.crown{font-size:30px}
+.premiumtext{flex:1}
+.premiumtext strong{display:block;color:#ffd08a;margin-bottom:5px}
+.premiumtext small{color:var(--muted);line-height:1.4}
+.premium button{border:0;background:var(--orange);color:#27132a;font-weight:bold;border-radius:10px;padding:10px}
+.projects{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:12px}
+.project{border:1px solid #392849;background:#1a1428;border-radius:15px;overflow:hidden}
+.projectthumb{height:105px;display:grid;place-items:center;font-size:36px;background:linear-gradient(140deg,#34245d,#8d385c)}
+.project:nth-child(2) .projectthumb{background:linear-gradient(140deg,#174954,#39785b)}
+.projectinfo{padding:10px}
+.projectinfo strong{font-size:13px}
+.projectinfo small{display:block;color:var(--muted);margin-top:5px}
+.empty{grid-column:1/-1;padding:20px;text-align:center;color:var(--muted);border:1px dashed #4a3b5a;border-radius:14px;font-size:13px}
+.bottomnav{position:fixed;bottom:0;left:0;right:0;z-index:5;background:#171022f5;border-top:1px solid #392849;display:flex;justify-content:space-around;padding:10px 4px calc(10px + env(safe-area-inset-bottom))}
+.navitem{border:0;background:transparent;color:#b9afce;display:flex;flex-direction:column;align-items:center;gap:5px;font-size:11px;min-width:60px}
+.navitem b{font-size:21px;font-weight:normal}
+.navitem.active{color:var(--orange)}
+.notice{font-size:12px;line-height:1.5;color:#a99fbd;text-align:center;margin:20px 0 0}
+@media(min-width:500px){main{padding-top:22px}.hero{min-height:205px;padding:27px}.hero h1{font-size:35px}.createcard{min-height:165px}}
 </style>
 </head>
 <body>
-<header>🎬 T Edit Studio</header>
+<header>
+  <div class="brand"><div class="logo">▶</div><div>T Edit <span>Studio</span></div></div>
+  <div style="display:flex;gap:8px">
+    <button class="headbtn" id="proTop" aria-label="Premium">♛</button>
+    <button class="headbtn" id="settings" aria-label="Settings">⚙</button>
+  </div>
+</header>
+
 <main>
-<h2>Your Video Project</h2>
+  <section class="hero">
+    <div class="tag">EDIT · CREATE · SHARE</div>
+    <h1>Your Story.<br><span>Your Style.</span></h1>
+    <p>Make your moments stand out with T Edit Studio.</p>
+    <button id="startEdit">＋ Start Editing</button>
+  </section>
 
-<div class="preview">
-  <div id="placeholder">Choose a video to start editing</div>
-  <video id="video" controls hidden></video>
-  <div class="watermark" id="watermark" hidden>T Edit Studio</div>
-</div>
+  <div class="sectionhead">
+    <h2>CREATE NEW</h2><small>Choose a project</small>
+  </div>
 
-<input id="picker" type="file" accept="video/*" hidden>
-<button class="primary" id="choose">＋ Select Video</button>
+  <section class="creategrid">
+    <button class="createcard" id="videoBtn">
+      <div class="articon">🎬</div><strong>Video</strong><small>Edit & Create</small>
+    </button>
+    <button class="createcard" id="photoBtn">
+      <div class="articon">▧</div><strong>Photo</strong><small>Design & Enhance</small>
+    </button>
+    <button class="createcard" id="collageBtn">
+      <div class="articon">▦</div><strong>Collage</strong><small>Combine Photos</small>
+    </button>
+  </section>
 
-<h2>Remove Watermark</h2>
-<p class="note">Free users can try the demo unlock button. Real rewarded ads will be connected later.</p>
-<button class="primary" id="remove">▶ Watch Ad & Remove Logo (Demo)</button>
-<p class="status" id="status">Select a video to begin.</p>
+  <section class="premium">
+    <div class="crown">👑</div>
+    <div class="premiumtext"><strong>T Edit Premium</strong><small>No watermark and no ads while your plan is active.</small></div>
+    <button id="premiumBtn">Explore</button>
+  </section>
 
-<h2>Trim Preview</h2>
-<label for="start">Start time (seconds)</label>
-<input id="start" type="number" min="0" value="0">
-<label for="end">End time (seconds)</label>
-<input id="end" type="number" min="1" value="10">
-<button class="primary" id="trim">Preview Trim Range</button>
-
-<button class="secondary" id="play">▶ Play</button>
-<button class="secondary" id="pause">⏸ Pause</button>
-<button class="secondary" id="restart">↻ Restart</button>
-
-<p class="note">
-This is an early prototype. The watermark appears on the preview only.
-Actual video export with a permanent watermark, real ads, premium payments,
-and true trimming are not implemented yet.
-</p>
+  <div class="sectionhead">
+    <h2>RECENT PROJECTS</h2><small id="projectCount">0 projects</small>
+  </div>
+  <section class="projects" id="projects">
+    <div class="empty">Your edited projects will appear here.</div>
+  </section>
+  <p class="notice">T Edit Studio · Create something amazing.<br>Home screen preview — editing and export tools are still being built.</p>
 </main>
 
+<nav class="bottomnav">
+  <button class="navitem active" id="homeTab"><b>⌂</b>Home</button>
+  <button class="navitem" id="projectsTab"><b>▣</b>Projects</button>
+  <button class="navitem" id="premiumTab"><b>♛</b>Premium</button>
+  <button class="navitem" id="profileTab"><b>☻</b>Profile</button>
+</nav>
+
+<input id="videoPicker" type="file" accept="video/*" hidden>
+<input id="photoPicker" type="file" accept="image/*" hidden multiple>
+
 <script>
-const video=document.getElementById('video');
-const picker=document.getElementById('picker');
-const watermark=document.getElementById('watermark');
-const status=document.getElementById('status');
-let videoUrl='';
-let unlocked=false;
+const videoPicker=document.getElementById('videoPicker');
+const photoPicker=document.getElementById('photoPicker');
 
-document.getElementById('choose').onclick=()=>picker.click();
+document.getElementById('videoBtn').onclick=()=>videoPicker.click();
+document.getElementById('startEdit').onclick=()=>videoPicker.click();
 
-picker.onchange=()=>{
-  const file=picker.files[0];
-  if(!file)return;
-  if(videoUrl)URL.revokeObjectURL(videoUrl);
-  videoUrl=URL.createObjectURL(file);
-  video.src=videoUrl;
-  video.hidden=false;
-  watermark.hidden=false;
-  document.getElementById('placeholder').hidden=true;
-  unlocked=false;
-  status.textContent='Video selected. Logo is visible in preview.';
-  video.load();
-};
-
-document.getElementById('remove').onclick=()=>{
-  if(!video.src){
-    status.textContent='Please select a video first.';
-    return;
-  }
-  if(!unlocked){
-    const ok=confirm('Demo only: this does not show a real advertisement. Simulate watching an ad to remove the preview logo?');
-    if(!ok)return;
-    unlocked=true;
-    watermark.hidden=true;
-    status.textContent='Demo unlocked. Real ads are not connected yet.';
-  }else{
-    watermark.hidden=false;
-    unlocked=false;
-    status.textContent='Logo shown again.';
+videoPicker.onchange=()=>{
+  if(videoPicker.files.length){
+    alert('Video selected: '+videoPicker.files[0].name+'. The full editor and export tools are coming next.');
   }
 };
 
-document.getElementById('play').onclick=()=>{
-  if(video.src)video.play();
-};
-document.getElementById('pause').onclick=()=>video.pause();
-document.getElementById('restart').onclick=()=>{
-  if(video.src){video.currentTime=0;video.play();}
+document.getElementById('photoBtn').onclick=()=>photoPicker.click();
+document.getElementById('collageBtn').onclick=()=>photoPicker.click();
+
+photoPicker.onchange=()=>{
+  if(photoPicker.files.length){
+    alert(photoPicker.files.length+' photo(s) selected. Photo editing and collage tools are coming next.');
+  }
 };
 
-document.getElementById('trim').onclick=()=>{
-  if(!video.src){
-    status.textContent='Please select a video first.';
-    return;
-  }
-  const s=Number(document.getElementById('start').value);
-  const e=Number(document.getElementById('end').value);
-  if(s<0||e<=s||e>video.duration){
-    status.textContent='Enter a valid range within the video duration.';
-    return;
-  }
-  video.currentTime=s;
-  video.play();
-  video.ontimeupdate=()=>{
-    if(video.currentTime>=e){
-      video.pause();
-      video.ontimeupdate=null;
-      status.textContent='Trim range preview finished. This has not created a new file.';
-    }
-  };
+function showComing(name){
+  alert(name+' is part of the T Edit Studio plan. This feature is not active yet.');
+}
+document.getElementById('proTop').onclick=()=>showComing('Premium');
+document.getElementById('premiumBtn').onclick=()=>showComing('Premium');
+document.getElementById('premiumTab').onclick=()=>showComing('Premium');
+document.getElementById('settings').onclick=()=>showComing('Settings');
+document.getElementById('profileTab').onclick=()=>showComing('Profile');
+
+document.getElementById('projectsTab').onclick=()=>{
+  document.getElementById('projects').scrollIntoView({behavior:'smooth',block:'center'});
 };
+document.getElementById('homeTab').onclick=()=>window.scrollTo({top:0,behavior:'smooth'});
 </script>
 </body>
 </html>
