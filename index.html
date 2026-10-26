@@ -1,0 +1,77 @@
+<!DOCTYPE html><html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>T Edit Studio</title>
+<style>
+*{box-sizing:border-box}
+body{margin:0;background:#11101a;color:white;font-family:Arial,sans-serif}
+header{padding:22px;background:#201a32;font-size:25px;font-weight:bold;color:#ff9d43}
+main{padding:18px;max-width:600px;margin:auto}
+h2{font-size:21px}
+button,.tool{border:0;border-radius:12px;padding:14px;background:#332747;color:white;font-size:15px;cursor:pointer}
+.primary{background:#ff9148;color:#211329;font-weight:bold;width:100%;margin:12px 0}
+.preview{background:#08080c;border:1px solid #40364f;border-radius:16px;min-height:210px;display:flex;align-items:center;justify-content:center;overflow:hidden}
+video{width:100%;max-height:340px}
+.tools{display:grid;grid-template-columns:repeat(2,1fr);gap:10px;margin-top:16px}
+input[type=file]{display:none}
+input[type=range]{width:100%;accent-color:#ff9148}
+.note{color:#c5bbd3;font-size:13px;line-height:1.5}
+</style>
+</head>
+<body>
+<header>🎬 T Edit Studio</header>
+<main>
+<h2>Your Video Project</h2>
+<div class="preview" id="preview">
+<span id="placeholder">Choose a video to start editing</span>
+<video id="video" controls hidden></video>
+</div>
+<label class="tool primary" style="display:block;text-align:center" for="picker">＋ Select Video</label>
+<input id="picker" type="file" accept="video/*">
+<h2>Trim Preview</h2>
+<label>Start time (seconds)</label>
+<input id="start" type="number" min="0" value="0" style="width:100%;padding:12px">
+<label>End time (seconds)</label>
+<input id="end" type="number" min="0" value="10" style="width:100%;padding:12px">
+<button class="primary" id="previewTrim">Preview Trim Range</button>
+<div class="tools">
+<button id="play">▶ Play</button>
+<button id="pause">⏸ Pause</button>
+<button id="back">↺ Restart</button>
+<button id="mute">🔇 Mute / Unmute</button>
+</div>
+<p class="note">This is the first prototype. Trim values only preview a range; actual cutting, music, text overlays and exporting will be added next.</p>
+</main>
+<script>
+const picker=document.getElementById('picker');
+const video=document.getElementById('video');
+let videoUrl=null;
+picker.addEventListener('change',()=>{
+ const file=picker.files[0];
+ if(!file)return;
+ if(videoUrl)URL.revokeObjectURL(videoUrl);
+ videoUrl=URL.createObjectURL(file);
+ video.src=videoUrl;
+ video.hidden=false;
+ document.getElementById('placeholder').hidden=true;
+ video.load();
+});
+document.getElementById('play').onclick=()=>video.play();
+document.getElementById('pause').onclick=()=>video.pause();
+document.getElementById('back').onclick=()=>{video.currentTime=0;};
+document.getElementById('mute').onclick=()=>{video.muted=!video.muted;};
+document.getElementById('previewTrim').onclick=()=>{
+ const s=Math.max(0,Number(document.getElementById('start').value)||0);
+ const e=Number(document.getElementById('end').value)||0;
+ if(!video.src){alert('Please select a video first.');return;}
+ if(e<=s||e>video.duration){alert('Enter a valid end time within the video duration.');return;}
+ video.currentTime=s;
+ video.ontimeupdate=()=>{
+  if(video.currentTime>=e){video.pause();video.ontimeupdate=null;}
+ };
+ video.play();
+};
+</script>
+</body>
+</html>
