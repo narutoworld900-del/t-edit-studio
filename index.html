@@ -4,295 +4,120 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<meta name="theme-color" content="#100b1d">
 <title>T Edit Studio</title>
 <style>
 *{box-sizing:border-box}
-:root{--bg:#100b1d;--panel:#1c1530;--line:#45315c;--orange:#ff8a32;--purple:#a52cff;--cyan:#19d7dc;--muted:#bcb4d2}
-body{margin:0;background:var(--bg);color:white;font-family:Arial,sans-serif}
-button{font:inherit;cursor:pointer}
-header{padding:16px;display:flex;align-items:center;justify-content:space-between;background:#191128;border-bottom:1px solid var(--line)}
-.brand{font-size:22px;font-weight:800}.brand span{color:var(--orange)}
-.header-actions{display:flex;gap:8px}
-button:disabled{opacity:.45;cursor:not-allowed}
-.smallbtn{background:var(--panel);border:1px solid var(--line);color:white;border-radius:10px;padding:10px}
-main{max-width:760px;margin:auto;padding:15px 14px 35px}
-.screen{display:none}.screen.active{display:block}
-.hero{padding:23px;border:1px solid #593572;border-radius:20px;background:radial-gradient(ellipse at 90% 10%,#763b83,transparent 45%),linear-gradient(120deg,#25183d,#171022)}
-.hero .tag{font-size:12px;letter-spacing:2px;color:#ffc184}
-.hero h1{font-size:30px;margin:12px 0}.hero h1 span{color:var(--orange)}
-.hero p{color:var(--muted);line-height:1.5}
-.primary{background:var(--orange);color:#29142c;border:0;border-radius:12px;padding:13px 16px;font-weight:bold}
-.full{width:100%}
-.sectionhead{display:flex;justify-content:space-between;align-items:center;margin:25px 0 13px}
-.sectionhead h2{font-size:19px;margin:0}
-.muted{color:var(--muted);font-size:13px}
-.creategrid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:10px}
-.createcard{min-height:130px;border:1px solid #53315e;border-radius:17px;padding:12px 4px;color:white;background:linear-gradient(145deg,#ff852f,#a42b66);display:flex;flex-direction:column;align-items:center;justify-content:center;gap:10px}
-.createcard:nth-child(2){background:linear-gradient(145deg,#a22aff,#4a2088)}
-.createcard:nth-child(3){background:linear-gradient(145deg,#0ca8b8,#174b7e)}
-.createcard b{font-size:16px}.createcard small{font-size:11px}
-.iconbox{font-size:29px}
-.premium{margin-top:20px;padding:16px;border:1px solid #78502b;border-radius:17px;background:linear-gradient(110deg,#33203c,#21162d);display:flex;align-items:center;gap:12px}
-.premium .words{flex:1}.premium strong{color:#ffd08a}.premium p{margin:6px 0 0;font-size:12px;color:var(--muted);line-height:1.4}
-.preview{position:relative;background:#050509;border:1px solid var(--line);border-radius:17px;min-height:230px;overflow:hidden;display:flex;align-items:center;justify-content:center}
-#video{width:100%;max-height:390px;display:block}
-.placeholder{text-align:center;color:var(--muted);padding:25px}
-.watermark{position:absolute;right:10px;bottom:10px;background:#211a32df;color:var(--orange);padding:7px 9px;border-radius:7px;font-weight:bold;font-size:12px;pointer-events:none}
-#textOverlay{position:absolute;top:45%;left:50%;transform:translate(-50%,-50%);max-width:90%;text-align:center;font-size:24px;font-weight:bold;color:white;text-shadow:2px 2px 4px black;pointer-events:none;white-space:pre-wrap}
-.toolbar{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:8px;margin:13px 0}
-.tool{border:1px solid var(--line);border-radius:12px;background:var(--panel);color:white;padding:12px 2px;font-size:12px}
-.tool b{display:block;font-size:22px;margin-bottom:5px}
-.tool.active{border-color:var(--orange);color:var(--orange)}
-.panel{border:1px solid var(--line);border-radius:15px;background:#191327;padding:14px;margin-top:12px}
-.panel h3{margin:0 0 12px;font-size:16px}
-label{display:block;font-size:13px;color:var(--muted);margin:10px 0 5px}
-input[type="number"],input[type="text"],select{width:100%;background:#0e0b17;border:1px solid var(--line);color:white;border-radius:9px;padding:11px;font-size:15px}
-input[type="range"]{width:100%;accent-color:var(--orange)}
-.row{display:grid;grid-template-columns:1fr 1fr;gap:10px}
-.timeline{height:58px;border:1px solid var(--line);border-radius:10px;background:repeating-linear-gradient(135deg,#29213c,#29213c 12px,#201a30 12px,#201a30 24px);position:relative;margin:12px 0}
-.timeline .playhead{position:absolute;top:0;bottom:0;left:0;width:3px;background:var(--orange)}
-.timeline .cliplabel{position:absolute;left:9px;top:20px;font-size:11px;color:#e4d9f7}
-.controls{display:grid;grid-template-columns:repeat(3,1fr);gap:8px}
-.controls button{background:#302443;color:white;border:1px solid var(--line);border-radius:10px;padding:11px 3px}
-.status{font-size:13px;color:#ffc184;line-height:1.5;min-height:20px}
-.notice{font-size:12px;color:#a99fbd;line-height:1.5;margin-top:20px}
-.bottomnav{position:fixed;bottom:0;left:0;right:0;z-index:10;background:#171022f5;border-top:1px solid var(--line);display:flex;justify-content:space-around;padding:9px 4px calc(9px + env(safe-area-inset-bottom))}
-.navitem{border:0;background:transparent;color:#b9afce;display:flex;flex-direction:column;align-items:center;gap:4px;font-size:11px;min-width:55px}
-.navitem b{font-size:21px;font-weight:normal}.navitem.active{color:var(--orange)}
-main{padding-bottom:100px}
-@media(min-width:600px){main{padding:22px}.preview{min-height:300px}.toolbar{grid-template-columns:repeat(6,minmax(0,1fr))}}
+body{margin:0;background:#100b1c;color:white;font-family:Arial,sans-serif}
+header{padding:18px;background:#211331;font-size:25px;font-weight:bold}
+header span{color:#ff9138}
+main{padding:18px;max-width:700px;margin:auto}
+h2{font-size:24px}
+button{border:0;border-radius:14px;padding:16px;background:#ff9138;color:#211331;font-size:17px;font-weight:bold;width:100%;margin:8px 0}
+.preview{background:#050408;border:1px solid #49345c;border-radius:22px;padding:12px;min-height:240px;display:flex;align-items:center;justify-content:center;position:relative}
+video{width:100%;max-height:55vh;display:block}
+.watermark{position:absolute;bottom:22px;right:20px;background:#211331dd;color:#ff9138;padding:8px;border-radius:8px;font-weight:bold;pointer-events:none}
+.tools{display:grid;grid-template-columns:1fr 1fr;gap:8px}
+.tools button{background:#332344;color:white}
+input{width:100%;padding:12px;margin:8px 0;font-size:16px}
+.note{color:#c5b5d5;line-height:1.5}
+#editor{display:none}
 </style>
 </head>
 <body>
-<header>
-  <div class="brand">▶ T Edit <span>Studio</span></div>
-  <div class="header-actions">
-    <button class="smallbtn" id="premiumTop">♛ PRO</button>
-    <button class="smallbtn" id="settingsTop">⚙</button>
-  </div>
-</header>
-
+<header>▶ T Edit <span>Studio</span></header>
 <main>
-<section id="homeScreen" class="screen active">
-  <div class="hero">
-    <div class="tag">EDIT · CREATE · SHARE</div>
-    <h1>Your Story.<br><span>Your Style.</span></h1>
-    <p>Make your moments stand out with T Edit Studio.</p>
-    <button class="primary" id="startBtn">＋ Start Editing</button>
-  </div>
-  <div class="sectionhead"><h2>CREATE NEW</h2><span class="muted">Choose a project</span></div>
-  <div class="creategrid">
-    <button class="createcard" id="homeVideo"><span class="iconbox">🎬</span><b>Video</b><small>Edit & Create</small></button>
-    <button class="createcard" id="homePhoto"><span class="iconbox">▧</span><b>Photo</b><small>Design & Enhance</small></button>
-    <button class="createcard" id="homeCollage"><span class="iconbox">▦</span><b>Collage</b><small>Combine Photos</small></button>
-  </div>
-  <div class="premium">
-    <div style="font-size:30px">👑</div>
-    <div class="words"><strong>T Edit Premium</strong><p>No watermark and no ads while your plan is active.</p></div>
-    <button class="primary" id="premiumExplore">Explore</button>
-  </div>
-  <div class="sectionhead"><h2>RECENT PROJECTS</h2><span class="muted">Local preview</span></div>
-  <div class="panel muted">Your recent projects will appear here in a future version.</div>
-  <p class="notice">Prototype only. Some tools and paid features are not connected yet.</p>
+<section id="home">
+  <h2>Your Story. Your Style.</h2>
+  <p class="note">Choose a video and start creating.</p>
+  <button onclick="openPicker()">＋ Start Editing</button>
+  <button onclick="openPicker()">🎬 Video</button>
+  <input id="file" type="file" accept="video/*" hidden>
 </section>
 
-<section id="editorScreen" class="screen">
-  <div class="sectionhead" style="margin-top:4px">
-    <button class="smallbtn" id="backHome">← Back</button>
-    <h2>Video Editor</h2>
-    <button class="primary" id="exportBtn">Export ↓</button>
-  </div>
+<section id="editor">
+  <h2>Your Video</h2>
   <div class="preview">
-    <div id="placeholder" class="placeholder">🎬<br>Choose a video to start editing</div>
-    <video id="video" controls playsinline hidden></video>
-    <div id="textOverlay" hidden></div>
-    <div id="watermark" class="watermark" hidden>T Edit Studio</div>
-  </div>
-  <input id="videoPicker" type="file" accept="video/*" hidden>
-  <button class="primary full" id="chooseVideo" style="margin-top:12px">＋ Select Video</button>
-
-  <div class="toolbar">
-    <button class="tool active" data-tool="trim"><b>✂</b>Trim</button>
-    <button class="tool" data-tool="music"><b>♫</b>Music</button>
-    <button class="tool" data-tool="text"><b>T</b>Text</button>
-    <button class="tool" data-tool="filter"><b>◐</b>Filters</button>
-    <button class="tool" data-tool="canvas"><b>▣</b>Canvas</button>
-    <button class="tool" data-tool="speed"><b>↗</b>Speed</button>
+    <video id="video" controls playsinline></video>
+    <div class="watermark" id="logo">T Edit Studio</div>
   </div>
 
-  <div class="panel" id="trimPanel">
-    <h3>✂ Trim Preview</h3>
-    <div class="row">
-      <div><label for="trimStart">Start (seconds)</label><input id="trimStart" type="number" min="0" value="0"></div>
-      <div><label for="trimEnd">End (seconds)</label><input id="trimEnd" type="number" min="1" value="10"></div>
-    </div>
-    <button class="primary full" id="previewTrim" style="margin-top:12px">Preview Trim Range</button>
-    <div class="timeline"><div class="playhead" id="playhead"></div><span class="cliplabel" id="clipLabel">No video selected</span></div>
-    <div class="controls">
-      <button id="playBtn">▶ Play</button><button id="pauseBtn">⏸ Pause</button><button id="restartBtn">↻ Restart</button>
-    </div>
+  <button onclick="openPicker()">＋ Change Video</button>
+
+  <h2>Trim Preview</h2>
+  <label>Start time (seconds)</label>
+  <input id="start" type="number" min="0" value="0">
+  <label>End time (seconds)</label>
+  <input id="end" type="number" min="1" value="10">
+  <button onclick="previewTrim()">Preview Selected Range</button>
+
+  <div class="tools">
+    <button onclick="video.play()">▶ Play</button>
+    <button onclick="video.pause()">⏸ Pause</button>
+    <button onclick="restartVideo()">↻ Restart</button>
+    <button onclick="toggleMute()">🔊 Mute / Unmute</button>
+    <button onclick="toggleLogo()">Show / Hide Logo</button>
   </div>
-
-  <div class="panel" id="textPanel" hidden>
-    <h3>🔤 Add Text</h3>
-    <label for="overlayInput">Text on video preview</label>
-    <input id="overlayInput" type="text" placeholder="Type your text here">
-    <button class="primary full" id="applyText" style="margin-top:12px">Apply Text to Preview</button>
-  </div>
-
-  <div class="panel" id="musicPanel" hidden>
-    <h3>♫ Add Music</h3>
-    <p class="muted">Choose an audio file to preview it. Mixing it into the exported video is not implemented yet.</p>
-    <input id="audioPicker" type="file" accept="audio/*" hidden>
-    <button class="primary full" id="chooseAudio">＋ Choose Music File</button>
-    <audio id="audio" controls style="width:100%;margin-top:10px" hidden></audio>
-  </div>
-
-  <div class="panel" id="filterPanel" hidden>
-    <h3>◐ Preview Filters</h3>
-    <label for="filterSelect">Choose a preview style</label>
-    <select id="filterSelect">
-      <option value="none">Original</option><option value="grayscale(1)">Black & White</option>
-      <option value="sepia(.7)">Warm</option><option value="contrast(1.25) saturate(1.3)">Vivid</option>
-      <option value="brightness(1.12) saturate(.8)">Bright</option>
-    </select>
-    <button class="primary full" id="applyFilter" style="margin-top:12px">Apply Preview Filter</button>
-  </div>
-
-  <div class="panel" id="canvasPanel" hidden>
-    <h3>▣ Canvas</h3>
-    <label for="canvasSelect">Preview aspect ratio</label>
-    <select id="canvasSelect"><option value="auto">Original preview</option><option value="9/16">Portrait 9:16</option><option value="1/1">Square 1:1</option><option value="16/9">Landscape 16:9</option></select>
-    <button class="primary full" id="applyCanvas" style="margin-top:12px">Apply Preview Canvas</button>
-  </div>
-
-  <div class="panel" id="speedPanel" hidden>
-    <h3>↗ Playback Speed</h3>
-    <label for="speedSelect">Preview speed</label>
-    <select id="speedSelect"><option value="0.5">0.5× Slow</option><option value="0.75">0.75×</option><option value="1" selected>1× Normal</option><option value="1.25">1.25×</option><option value="1.5">1.5×</option><option value="2">2× Fast</option></select>
-    <button class="primary full" id="applySpeed" style="margin-top:12px">Apply Preview Speed</button>
-  </div>
-
-  <p class="status" id="status">Select a video to begin.</p>
-  <p class="notice">Important: this prototype previews edits but does not yet render a finished edited video. Export downloads the original selected video. Text and filters are preview-only.</p>
-</section>
-
-<section id="projectsScreen" class="screen">
-  <h2>My Projects</h2><p class="muted">Projects library will be added in a future version.</p>
-</section>
-<section id="premiumScreen" class="screen">
-  <h2>👑 T Edit Premium</h2>
-  <div class="panel"><strong>No watermark · No ads</strong><p class="muted">Premium purchasing is not connected yet. No payment will be taken on this demo screen.</p></div>
-</section>
-<section id="profileScreen" class="screen">
-  <h2>Profile</h2><div class="panel muted">Profile and account settings will be added later.</div>
+  <p class="note" id="status">Video ready to preview.</p>
+  <button onclick="video.pause();alert('Export feature abhi banana baaki hai. Video abhi save nahi hota.')">Save / Export</button>
 </section>
 </main>
 
-<nav class="bottomnav">
-  <button class="navitem active" data-screen="homeScreen"><b>⌂</b>Home</button>
-  <button class="navitem" data-screen="projectsScreen"><b>▣</b>Projects</button>
-  <button class="navitem" data-screen="premiumScreen"><b>♛</b>Premium</button>
-  <button class="navitem" data-screen="profileScreen"><b>☻</b>Profile</button>
-</nav>
-
 <script>
-const $=id=>document.getElementById(id);
-const video=$('video'),picker=$('videoPicker'),watermark=$('watermark');
-let videoUrl='',audioUrl='',trimTimer=null;
+const fileInput=document.getElementById('file');
+const video=document.getElementById('video');
+const home=document.getElementById('home');
+const editor=document.getElementById('editor');
+const statusText=document.getElementById('status');
+let videoUrl='';
 
-function showScreen(id){
-  document.querySelectorAll('.screen').forEach(s=>s.classList.remove('active'));
-  $(id).classList.add('active');
-  document.querySelectorAll('.navitem').forEach(n=>n.classList.toggle('active',n.dataset.screen===id));
-  window.scrollTo({top:0,behavior:'smooth'});
-}
-document.querySelectorAll('.navitem').forEach(n=>n.onclick=()=>showScreen(n.dataset.screen));
-$('homeVideo').onclick=$('startBtn').onclick=()=>{showScreen('editorScreen');picker.click()};
-$('chooseVideo').onclick=()=>picker.click();
-$('backHome').onclick=()=>showScreen('homeScreen');
+function openPicker(){fileInput.click();}
 
-$('homePhoto').onclick=()=>alert('Photo editing is planned for a future update.');
-$('homeCollage').onclick=()=>alert('Collage tools are planned for a future update.');
-$('premiumTop').onclick=$('premiumExplore').onclick=()=>showScreen('premiumScreen');
-$('settingsTop').onclick=()=>alert('Settings will be added later.');
-
-picker.onchange=()=>{
-  const file=picker.files[0];
+fileInput.addEventListener('change',function(){
+  const file=this.files && this.files[0];
   if(!file)return;
+  if(!file.type.startsWith('video/')){
+    alert('Please select a video file.');
+    return;
+  }
   if(videoUrl)URL.revokeObjectURL(videoUrl);
   videoUrl=URL.createObjectURL(file);
-  video.src=videoUrl;video.hidden=false;watermark.hidden=false;
-  $('textOverlay').hidden=true;$('placeholder').hidden=true;
-  $('status').textContent='Video loaded. Logo appears in preview.';
-  $('clipLabel').textContent=file.name;
+  video.src=videoUrl;
+  home.style.display='none';
+  editor.style.display='block';
   video.load();
-  video.onloadedmetadata=()=>{
-    $('trimStart').value=0;
-    $('trimEnd').value=Math.floor(video.duration)||1;
-    $('status').textContent='Video loaded: '+Math.round(video.duration)+' seconds. Preview edits below.';
+  video.onloadedmetadata=function(){
+    document.getElementById('start').max=Math.floor(video.duration);
+    document.getElementById('end').max=Math.floor(video.duration);
+    document.getElementById('end').value=Math.floor(video.duration);
+    statusText.textContent='Video loaded: '+file.name;
   };
-};
-
-$('playBtn').onclick=()=>{if(video.src)video.play();else $('status').textContent='Select a video first.'};
-$('pauseBtn').onclick=()=>video.pause();
-$('restartBtn').onclick=()=>{if(video.src){video.currentTime=0;video.play()}};
-
-$('previewTrim').onclick=()=>{
-  if(!video.src){$('status').textContent='Select a video first.';return}
-  const s=Number($('trimStart').value),e=Number($('trimEnd').value);
-  if(s<0||e<=s||e>video.duration){$('status').textContent='Enter a valid start/end within the video duration.';return}
-  if(trimTimer)clearInterval(trimTimer);
-  video.currentTime=s;video.play();
-  trimTimer=setInterval(()=>{
-    if(video.currentTime>=e){video.pause();clearInterval(trimTimer);trimTimer=null;$('status').textContent='Trim preview finished. No new file has been created.'}
-    $('playhead').style.left=Math.min(100,video.currentTime/video.duration*100)+'%';
-  },100);
-};
-
-document.querySelectorAll('[data-tool]').forEach(btn=>btn.onclick=()=>{
-  document.querySelectorAll('[data-tool]').forEach(b=>b.classList.toggle('active',b===btn));
-  ['trim','music','text','filter','canvas','speed'].forEach(t=>$(t+'Panel').hidden=t!==btn.dataset.tool);
 });
 
-$('applyText').onclick=()=>{
-  const t=$('overlayInput').value.trim();
-  if(!video.src){$('status').textContent='Select a video first.';return}
-  $('textOverlay').textContent=t;$('textOverlay').hidden=!t;
-  $('status').textContent=t?'Text is shown in the preview only.':'Preview text cleared.';
-};
+function previewTrim(){
+  const s=Number(document.getElementById('start').value);
+  const e=Number(document.getElementById('end').value);
+  if(!video.src){alert('Pehle video select karo.');return;}
+  if(s<0||e<=s||e>video.duration){
+    alert('Start aur end time sahi bharo.');
+    return;
+  }
+  video.currentTime=s;
+  video.play();
+  video.ontimeupdate=function(){
+    if(video.currentTime>=e){
+      video.pause();
+      video.ontimeupdate=null;
+    }
+  };
+  statusText.textContent='Selected range ka preview chal raha hai.';
+}
 
-$('chooseAudio').onclick=()=>$('audioPicker').click();
-$('audioPicker').onchange=()=>{
-  const f=$('audioPicker').files[0];if(!f)return;
-  if(audioUrl)URL.revokeObjectURL(audioUrl);
-  audioUrl=URL.createObjectURL(f);$('audio').src=audioUrl;$('audio').hidden=false;
-  $('status').textContent='Audio preview loaded. Mixing into video is not available yet.';
-};
-
-$('applyFilter').onclick=()=>{
-  video.style.filter=$('filterSelect').value==='none'?'none':$('filterSelect').value;
-  $('status').textContent='Filter applied to preview only.';
-};
-$('applyCanvas').onclick=()=>{
-  const value=$('canvasSelect').value;
-  document.querySelector('.preview').style.aspectRatio=value==='auto'?'auto':value;
-  $('status').textContent='Canvas preview changed. Export dimensions are not changed.';
-};
-$('applySpeed').onclick=()=>{
-  video.playbackRate=Number($('speedSelect').value);
-  $('status').textContent='Preview playback speed updated.';
-};
-
-$('exportBtn').onclick=()=>{
-  if(!videoUrl){$('status').textContent='Select a video first.';return}
-  const a=document.createElement('a');
-  a.href=videoUrl;a.download='T-Edit-Studio-original-video';
-  document.body.appendChild(a);a.click();a.remove();
-  $('status').textContent='Original video download requested. Edits are not rendered into this file yet.';
-};
+function restartVideo(){video.currentTime=0;video.play();}
+function toggleMute(){video.muted=!video.muted;}
+function toggleLogo(){
+  const logo=document.getElementById('logo');
+  logo.style.display=logo.style.display==='none'?'block':'none';
+}
 </script>
 </body>
-  </html>
-  
+</html>
