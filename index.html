@@ -1,76 +1,134 @@
-<!DOCTYPE html><html lang="en">
+
+<!DOCTYPE html>
+<html lang="en">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="viewport" content="width=device-width, initial-scale=1">
 <title>T Edit Studio</title>
 <style>
 *{box-sizing:border-box}
 body{margin:0;background:#11101a;color:white;font-family:Arial,sans-serif}
-header{padding:22px;background:#201a32;font-size:25px;font-weight:bold;color:#ff9d43}
-main{padding:18px;max-width:600px;margin:auto}
-h2{font-size:21px}
-button,.tool{border:0;border-radius:12px;padding:14px;background:#332747;color:white;font-size:15px;cursor:pointer}
-.primary{background:#ff9148;color:#211329;font-weight:bold;width:100%;margin:12px 0}
-.preview{background:#08080c;border:1px solid #40364f;border-radius:16px;min-height:210px;display:flex;align-items:center;justify-content:center;overflow:hidden}
-video{width:100%;max-height:340px}
-.tools{display:grid;grid-template-columns:repeat(2,1fr);gap:10px;margin-top:16px}
-input[type=file]{display:none}
-input[type=range]{width:100%;accent-color:#ff9148}
-.note{color:#c5bbd3;font-size:13px;line-height:1.5}
+header{padding:20px;background:#201a32;color:#ff9148;font-size:27px;font-weight:bold}
+main{padding:18px;max-width:650px;margin:auto}
+h2{font-size:23px}
+.preview{position:relative;background:#08080c;border:1px solid #403650;border-radius:18px;overflow:hidden;min-height:220px;display:flex;align-items:center;justify-content:center}
+video{width:100%;max-height:420px;display:block}
+.watermark{position:absolute;right:12px;bottom:12px;background:#211a32dd;color:#ff9148;padding:8px 10px;border-radius:7px;font-size:13px;font-weight:bold;pointer-events:none}
+button,.tool{border:0;border-radius:12px;padding:15px;font-size:16px;cursor:pointer}
+.primary{background:#ff9148;color:#21132b;font-weight:bold;width:100%;margin:10px 0}
+.secondary{background:#302443;color:white;width:100%;margin:5px 0}
+input{width:100%;padding:13px;font-size:16px;margin:7px 0 12px}
+.note{color:#c9c1d4;font-size:14px;line-height:1.5}
+.status{color:#ffbd83;font-size:14px}
 </style>
 </head>
 <body>
 <header>🎬 T Edit Studio</header>
 <main>
 <h2>Your Video Project</h2>
-<div class="preview" id="preview">
-<span id="placeholder">Choose a video to start editing</span>
-<video id="video" controls hidden></video>
+
+<div class="preview">
+  <div id="placeholder">Choose a video to start editing</div>
+  <video id="video" controls hidden></video>
+  <div class="watermark" id="watermark" hidden>T Edit Studio</div>
 </div>
-<label class="tool primary" style="display:block;text-align:center" for="picker">＋ Select Video</label>
-<input id="picker" type="file" accept="video/*">
+
+<input id="picker" type="file" accept="video/*" hidden>
+<button class="primary" id="choose">＋ Select Video</button>
+
+<h2>Remove Watermark</h2>
+<p class="note">Free users can try the demo unlock button. Real rewarded ads will be connected later.</p>
+<button class="primary" id="remove">▶ Watch Ad & Remove Logo (Demo)</button>
+<p class="status" id="status">Select a video to begin.</p>
+
 <h2>Trim Preview</h2>
-<label>Start time (seconds)</label>
-<input id="start" type="number" min="0" value="0" style="width:100%;padding:12px">
-<label>End time (seconds)</label>
-<input id="end" type="number" min="0" value="10" style="width:100%;padding:12px">
-<button class="primary" id="previewTrim">Preview Trim Range</button>
-<div class="tools">
-<button id="play">▶ Play</button>
-<button id="pause">⏸ Pause</button>
-<button id="back">↺ Restart</button>
-<button id="mute">🔇 Mute / Unmute</button>
-</div>
-<p class="note">This is the first prototype. Trim values only preview a range; actual cutting, music, text overlays and exporting will be added next.</p>
+<label for="start">Start time (seconds)</label>
+<input id="start" type="number" min="0" value="0">
+<label for="end">End time (seconds)</label>
+<input id="end" type="number" min="1" value="10">
+<button class="primary" id="trim">Preview Trim Range</button>
+
+<button class="secondary" id="play">▶ Play</button>
+<button class="secondary" id="pause">⏸ Pause</button>
+<button class="secondary" id="restart">↻ Restart</button>
+
+<p class="note">
+This is an early prototype. The watermark appears on the preview only.
+Actual video export with a permanent watermark, real ads, premium payments,
+and true trimming are not implemented yet.
+</p>
 </main>
+
 <script>
-const picker=document.getElementById('picker');
 const video=document.getElementById('video');
-let videoUrl=null;
-picker.addEventListener('change',()=>{
- const file=picker.files[0];
- if(!file)return;
- if(videoUrl)URL.revokeObjectURL(videoUrl);
- videoUrl=URL.createObjectURL(file);
- video.src=videoUrl;
- video.hidden=false;
- document.getElementById('placeholder').hidden=true;
- video.load();
-});
-document.getElementById('play').onclick=()=>video.play();
+const picker=document.getElementById('picker');
+const watermark=document.getElementById('watermark');
+const status=document.getElementById('status');
+let videoUrl='';
+let unlocked=false;
+
+document.getElementById('choose').onclick=()=>picker.click();
+
+picker.onchange=()=>{
+  const file=picker.files[0];
+  if(!file)return;
+  if(videoUrl)URL.revokeObjectURL(videoUrl);
+  videoUrl=URL.createObjectURL(file);
+  video.src=videoUrl;
+  video.hidden=false;
+  watermark.hidden=false;
+  document.getElementById('placeholder').hidden=true;
+  unlocked=false;
+  status.textContent='Video selected. Logo is visible in preview.';
+  video.load();
+};
+
+document.getElementById('remove').onclick=()=>{
+  if(!video.src){
+    status.textContent='Please select a video first.';
+    return;
+  }
+  if(!unlocked){
+    const ok=confirm('Demo only: this does not show a real advertisement. Simulate watching an ad to remove the preview logo?');
+    if(!ok)return;
+    unlocked=true;
+    watermark.hidden=true;
+    status.textContent='Demo unlocked. Real ads are not connected yet.';
+  }else{
+    watermark.hidden=false;
+    unlocked=false;
+    status.textContent='Logo shown again.';
+  }
+};
+
+document.getElementById('play').onclick=()=>{
+  if(video.src)video.play();
+};
 document.getElementById('pause').onclick=()=>video.pause();
-document.getElementById('back').onclick=()=>{video.currentTime=0;};
-document.getElementById('mute').onclick=()=>{video.muted=!video.muted;};
-document.getElementById('previewTrim').onclick=()=>{
- const s=Math.max(0,Number(document.getElementById('start').value)||0);
- const e=Number(document.getElementById('end').value)||0;
- if(!video.src){alert('Please select a video first.');return;}
- if(e<=s||e>video.duration){alert('Enter a valid end time within the video duration.');return;}
- video.currentTime=s;
- video.ontimeupdate=()=>{
-  if(video.currentTime>=e){video.pause();video.ontimeupdate=null;}
- };
- video.play();
+document.getElementById('restart').onclick=()=>{
+  if(video.src){video.currentTime=0;video.play();}
+};
+
+document.getElementById('trim').onclick=()=>{
+  if(!video.src){
+    status.textContent='Please select a video first.';
+    return;
+  }
+  const s=Number(document.getElementById('start').value);
+  const e=Number(document.getElementById('end').value);
+  if(s<0||e<=s||e>video.duration){
+    status.textContent='Enter a valid range within the video duration.';
+    return;
+  }
+  video.currentTime=s;
+  video.play();
+  video.ontimeupdate=()=>{
+    if(video.currentTime>=e){
+      video.pause();
+      video.ontimeupdate=null;
+      status.textContent='Trim range preview finished. This has not created a new file.';
+    }
+  };
 };
 </script>
 </body>
